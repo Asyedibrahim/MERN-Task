@@ -9,12 +9,14 @@ import {
     getCategories,
     updateProduct,
     deleteProduct,
+    addProduct,
 } from '../controllers/product.controller.js';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.post('/import', upload.single('csvFile'), importProducts);
+router.post('/add-product', addProduct);
 router.put('/update-multiple', updateMultipleProducts);
 router.get('/:id/history', getProductHistory);
 router.get('/export', exportProducts);

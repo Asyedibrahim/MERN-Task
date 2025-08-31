@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import DuplicateModal from '../components/DuplicateModal';
 import ProductHistoryModal from './ProductHistoryModal';
+import CreateProductModal from './CreateProductModal';
 
 const ProductList = () => {
 
@@ -14,6 +15,18 @@ const ProductList = () => {
 
     const [importLoading, setImportLoading] = useState(false);
     const [exportLoading, setExportLoading] = useState(false);
+
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [createFormData, setCreateFormData] = useState({
+        name: '',
+        unit: '',
+        category: '',
+        brand: '',
+        stock: '',
+        status: 'In Stock',
+        image: ''
+    });
+    const [creating, setCreating] = useState(false);
 
     const [editingId, setEditingId] = useState(null);
     const [editFormData, setEditFormData] = useState({
@@ -81,6 +94,40 @@ const ProductList = () => {
 
         return () => clearTimeout(debounceTimer);
     }, [fetchProducts]);
+
+    const handleCreateProduct = async () => {
+        setCreating(true);
+        try {
+            const response = await axios.post('/api/products/add-product', createFormData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.status === 201) {
+                toast.success('Product created successfully!');
+                setShowCreateModal(false);
+                setCreateFormData({
+                    name: '',
+                    unit: '',
+                    category: '',
+                    brand: '',
+                    stock: '',
+                    status: 'In Stock',
+                    image: ''
+                });
+                await fetchProducts();
+                await fetchCategories();
+            } else {
+                toast.error('Failed to create product');
+            }
+        } catch (err) {
+            console.error('Error creating product:', err);
+            toast.error('Failed to create product');
+        } finally {
+            setCreating(false);
+        }
+    };
 
     // Import functionality
     const handleImport = async (e) => {
@@ -350,9 +397,12 @@ const ProductList = () => {
                         <FaFilter className="absolute left-3 top-3 text-gray-400" />
                     </div>
                     {/* Add Product Button */}
-                    <div className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-950 whitespace-nowrap text-center">
+                    <button 
+                        onClick={() => setShowCreateModal(true)}
+                        className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-950 whitespace-nowrap text-center cursor-pointer"
+                    >
                         Add Product
-                    </div>
+                    </button>
                 </div>
 
                 {/* Clear Filters Button - Only show when filters are active */}
@@ -569,6 +619,16 @@ const ProductList = () => {
                 </div>
             )}
         </div>
+
+        {/* Create Product Modal */}
+        <CreateProductModal
+            isOpen={showCreateModal}
+            onClose={() => setShowCreateModal(false)}
+            formData={createFormData}
+            setFormData={setCreateFormData}
+            creating={creating}
+            onCreateProduct={handleCreateProduct}
+        />
 
         {/* Duplicate Modal */}
         <DuplicateModal

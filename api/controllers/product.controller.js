@@ -90,6 +90,16 @@ export const importProducts = async (req, res) => {
     }
 };
 
+export const addProduct = async (req, res) => {
+    try {
+        const product = new Product(req.body);
+        await product.save();
+        res.status(201).json(product);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 export const updateMultipleProducts = async (req, res) => {
     try {
         const { products } = req.body;
