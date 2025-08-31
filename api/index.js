@@ -29,11 +29,11 @@ app.use(cookieParser());
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 
-// app.use(express.static(path.join(__dirname, '/frontend/dist')));
+app.use(express.static(path.join(__dirname, '/frontend/dist')));
 
-// app.all('/*splat', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
-// });
+app.all('/*splat', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+});
 
 const PORT = 4100;
 app.listen(PORT, () => {
