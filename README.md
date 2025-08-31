@@ -11,10 +11,6 @@ npm i
 3. Set up environment variables
 Create a .env file in the root directory with the following variables:
 MONGODB_URI=mongodb://localhost:27017/product-management
-PORT=4100
-CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_cloudinary_key
-CLOUDINARY_API_SECRET=your_cloudinary_secret
 JWT_SECRET=your_jwt_secret
 
 4. Start MongoDB
